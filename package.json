@@ -1,0 +1,24 @@
+{
+  "name": "sentry-dingding-webhook",
+  "version": "1.0.0",
+  "description": "Webhook service to forward Sentry alerts to DingDing",
+  "main": "index.js",
+  "scripts": {
+    "dev": "netlify dev",
+    "build": "echo 'No build step required'"
+  },
+  "dependencies": {
+    "axios": "^1.6.0"
+  },
+  "devDependencies": {
+    "@netlify/functions": "^2.0.0"
+  },
+  "keywords": [
+    "sentry",
+    "dingding",
+    "webhook",
+    "netlify"
+  ],
+  "author": "",
+  "license": "MIT"
+} 

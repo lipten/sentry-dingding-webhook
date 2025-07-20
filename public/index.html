@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sentry to DingDing Webhook</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+            color: #333;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .status {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        .endpoint {
+            background: #e3f2fd;
+            border: 1px solid #2196f3;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .code {
+            background: #f5f5f5;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 15px;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            overflow-x: auto;
+            margin: 10px 0;
+        }
+        .success {
+            color: #28a745;
+        }
+        .warning {
+            color: #ffc107;
+        }
+        .error {
+            color: #dc3545;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🚨 Sentry to DingDing Webhook</h1>
+        <p>将 Sentry 告警转发到钉钉机器人的 Webhook 服务</p>
+    </div>
+
+    <div class="status">
+        <h2>服务状态</h2>
+        <p class="success">✅ 服务运行正常</p>
+        <p>Webhook 端点已准备就绪，可以接收 Sentry 的告警消息并转发到钉钉。</p>
+    </div>
+
+    <div class="endpoint">
+        <h2>Webhook 端点</h2>
+        <p><strong>URL:</strong></p>
+        <div class="code" id="webhookUrl">https://your-site.netlify.app/webhook</div>
+        <p><strong>方法:</strong> POST</p>
+        <p><strong>内容类型:</strong> application/json</p>
+    </div>
+
+    <div class="endpoint">
+        <h2>环境变量配置</h2>
+        <p>请在 Netlify 控制台中设置以下环境变量：</p>
+        <div class="code">DINGDING_WEBHOOK_URL=https://oapi.dingtalk.com/robot/send?access_token=YOUR_TOKEN</div>
+    </div>
+
+    <div class="endpoint">
+        <h2>Sentry 配置</h2>
+        <p>在 Sentry 项目中配置 Webhook：</p>
+        <ol>
+            <li>进入 Sentry 项目设置</li>
+            <li>选择 "Integrations" → "Webhooks"</li>
+            <li>添加新的 Webhook，URL 设置为上面的端点地址</li>
+            <li>选择需要触发的事件类型（如 Error、Warning 等）</li>
+        </ol>
+    </div>
+
+    <div class="endpoint">
+        <h2>测试 Webhook</h2>
+        <p>可以使用以下命令测试 webhook 是否正常工作：</p>
+        <div class="code">curl -X POST https://your-site.netlify.app/webhook \
+  -H "Content-Type: application/json" \
+  -d '{
+    "environment": "production",
+    "project": {"name": "test-project"},
+    "level": "error",
+    "datetime": "2024-01-01T12:00:00Z",
+    "url": "https://sentry.io/organizations/your-org/issues/123",
+    "message": "Test error message",
+    "culprit": "test.js:1:1"
+  }'</div>
+    </div>
+
+    <script>
+        // 自动更新webhook URL为当前域名
+        const currentUrl = window.location.origin + '/webhook';
+        document.getElementById('webhookUrl').textContent = currentUrl;
+    </script>
+</body>
+</html> 
