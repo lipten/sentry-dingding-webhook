@@ -25,6 +25,8 @@ export const handler = async (
     "Access-Control-Allow-Methods": "POST, OPTIONS",
   };
 
+  console.log('httpMethod', event.httpMethod)
+
   // 处理OPTIONS请求（预检请求）
   if (event.httpMethod === "OPTIONS") {
     return {
@@ -46,6 +48,7 @@ export const handler = async (
   try {
     // 解析Sentry发送的数据
     const sentryData: SentryWebhookPayload = JSON.parse(event.body);
+    console.log('sentryData', JSON.stringify(sentryData, null, 2))
     const dingdingWebhookUrl = process.env["DINGDING_WEBHOOK_URL"];
 
     // 检查环境变量
