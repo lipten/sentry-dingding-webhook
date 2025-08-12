@@ -18,6 +18,7 @@ const handler = async (event, _context) => {
         "Access-Control-Allow-Headers": "Content-Type",
         "Access-Control-Allow-Methods": "POST, OPTIONS",
     };
+    console.log('httpMethod', event.httpMethod);
     // 处理OPTIONS请求（预检请求）
     if (event.httpMethod === "OPTIONS") {
         return {
@@ -37,6 +38,7 @@ const handler = async (event, _context) => {
     try {
         // 解析Sentry发送的数据
         const sentryData = JSON.parse(event.body);
+        console.log('sentryData', JSON.stringify(sentryData, null, 2));
         const dingdingWebhookUrl = process.env["DINGDING_WEBHOOK_URL"];
         // 检查环境变量
         if (!dingdingWebhookUrl) {
@@ -138,7 +140,7 @@ function formatSentryMessage(sentryData) {
         const os = contexts.os || {};
         const device = contexts.device || {};
         // 构建markdown消息
-        let markdown = `## 🚨 Sentry 告警通知\n\n`;
+        let markdown = `## 🚨 Sentry 告警通知【error】\n\n`;
         // 基本信息
         markdown += `**环境**: \`${environment}\`\n\n`;
         markdown += `**级别**: \`${level.toUpperCase()}\`\n\n`;
@@ -236,7 +238,7 @@ function formatSentryMessage(sentryData) {
     }
     else if (issue) {
         // 关闭soucemap上传会没有error，只有issue
-        let markdown = `## 🚨 Sentry 告警通知\n\n`;
+        let markdown = `## 🚨 Sentry 告警通知【issue】\n\n`;
         // 提取issue基本信息
         const project = issue.project?.["name"] || "Unknown";
         const level = issue.level || "info";
@@ -308,7 +310,7 @@ function formatSentryMessage(sentryData) {
     }
     else if (event) {
         // 关闭soucemap上传会没有error，只有issue
-        let markdown = `## 🚨 Sentry 告警通知\n\n`;
+        let markdown = `## 🚨 Sentry 告警通知【event】\n\n`;
         markdown += `**项目**: \`${event.project}\`\n\n`;
         markdown += `**级别**: \`${event.level.toUpperCase()}\`\n\n`;
         markdown += `**平台**: \`${event.platform}\`\n\n`;

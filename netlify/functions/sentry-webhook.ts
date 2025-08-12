@@ -165,7 +165,7 @@ function formatSentryMessage(sentryData: SentryWebhookPayload): string {
     const device = contexts.device || {};
 
     // 构建markdown消息
-    let markdown = `## 🚨 Sentry 告警通知\n\n`;
+    let markdown = `## 🚨 Sentry 告警通知【error】\n\n`;
 
     // 基本信息
     markdown += `**环境**: \`${environment}\`\n\n`;
@@ -269,7 +269,7 @@ function formatSentryMessage(sentryData: SentryWebhookPayload): string {
     return markdown;
   } else if (issue) {
     // 关闭soucemap上传会没有error，只有issue
-    let markdown = `## 🚨 Sentry 告警通知\n\n`;
+    let markdown = `## 🚨 Sentry 告警通知【issue】\n\n`;
     
     // 提取issue基本信息
     const project = issue.project?.["name"] || "Unknown";
@@ -350,7 +350,7 @@ function formatSentryMessage(sentryData: SentryWebhookPayload): string {
     return markdown;
   } else if (event) {
     // 关闭soucemap上传会没有error，只有issue
-    let markdown = `## 🚨 Sentry 告警通知\n\n`;
+    let markdown = `## 🚨 Sentry 告警通知【event】\n\n`;
 
     markdown += `**项目**: \`${event.project}\`\n\n`;
     markdown += `**级别**: \`${event.level.toUpperCase()}\`\n\n`;
