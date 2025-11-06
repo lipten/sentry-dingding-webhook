@@ -272,108 +272,108 @@ function formatSentryMessage(sentryData: SentryWebhookPayload): string | false {
     }
     return markdown;
   }
-  // else if (issue) {
-  //   // 关闭soucemap上传会没有error，只有issue
-  //   let markdown = `## 🚨 Sentry 告警通知【issue】\n\n`;
+  else if (issue) {
+    // 关闭soucemap上传会没有error，只有issue
+    let markdown = `## 🚨 Sentry 告警通知【issue】\n\n`;
 
-  //   // 提取issue基本信息
-  //   const project = issue.project?.["name"] || "Unknown";
-  //   const level = issue.level || "info";
-  //   const title = issue.title || "未知问题";
-  //   const culprit = issue.culprit || "";
-  //   const status = issue.status || "";
-  //   const issueType = issue.issueType || "";
-  //   const issueCategory = issue.issueCategory || "";
-  //   const priority = issue.priority || "";
-  //   const count = issue.count || "0";
-  //   const userCount = issue.userCount || 0;
-  //   const firstSeen = issue.firstSeen || "";
-  //   const lastSeen = issue.lastSeen || "";
-  //   const webUrl = issue.web_url || "";
-  //   const shortId = issue.shortId || "";
-  //   const platform = issue.platform || "";
-  //   const isUnhandled = issue.isUnhandled || false;
-  //   const metadata = issue.metadata || {};
+    // 提取issue基本信息
+    const project = issue.project?.["name"] || "Unknown";
+    const level = issue.level || "info";
+    const title = issue.title || "未知问题";
+    const culprit = issue.culprit || "";
+    const status = issue.status || "";
+    const issueType = issue.issueType || "";
+    const issueCategory = issue.issueCategory || "";
+    const priority = issue.priority || "";
+    const count = issue.count || "0";
+    const userCount = issue.userCount || 0;
+    const firstSeen = issue.firstSeen || "";
+    const lastSeen = issue.lastSeen || "";
+    const webUrl = issue.web_url || "";
+    const shortId = issue.shortId || "";
+    const platform = issue.platform || "";
+    const isUnhandled = issue.isUnhandled || false;
+    const metadata = issue.metadata || {};
 
-  //   // 基本信息
-  //   markdown += `**项目**: \`${project}\`\n\n`;
-  //   markdown += `**级别**: \`${level.toUpperCase()}\`\n\n`;
-  //   markdown += `**状态**: \`${status}\`\n\n`;
-  //   markdown += `**问题类型**: \`${issueType}\`\n\n`;
-  //   markdown += `**问题分类**: \`${issueCategory}\`\n\n`;
-  //   markdown += `**优先级**: \`${priority}\`\n\n`;
-  //   markdown += `**平台**: \`${platform}\`\n\n`;
+    // 基本信息
+    markdown += `**项目**: \`${project}\`\n\n`;
+    markdown += `**级别**: \`${level.toUpperCase()}\`\n\n`;
+    markdown += `**状态**: \`${status}\`\n\n`;
+    markdown += `**问题类型**: \`${issueType}\`\n\n`;
+    markdown += `**问题分类**: \`${issueCategory}\`\n\n`;
+    markdown += `**优先级**: \`${priority}\`\n\n`;
+    markdown += `**平台**: \`${platform}\`\n\n`;
 
-  //   // 时间信息
-  //   if (firstSeen) {
-  //     markdown += `**首次出现**: \`${new Date(firstSeen).toLocaleString(
-  //       "zh-CN"
-  //     )}\`\n\n`;
-  //   }
-  //   if (lastSeen) {
-  //     markdown += `**最后出现**: \`${new Date(lastSeen).toLocaleString(
-  //       "zh-CN"
-  //     )}\`\n\n`;
-  //   }
+    // 时间信息
+    if (firstSeen) {
+      markdown += `**首次出现**: \`${new Date(firstSeen).toLocaleString(
+        "zh-CN"
+      )}\`\n\n`;
+    }
+    if (lastSeen) {
+      markdown += `**最后出现**: \`${new Date(lastSeen).toLocaleString(
+        "zh-CN"
+      )}\`\n\n`;
+    }
 
-  //   // 问题标题
-  //   markdown += `**问题**: \`${title}\`\n\n`;
+    // 问题标题
+    markdown += `**问题**: \`${title}\`\n\n`;
 
-  //   // 错误位置
-  //   if (culprit) {
-  //     markdown += `**错误位置**: \`${culprit}\`\n\n`;
-  //   }
+    // 错误位置
+    if (culprit) {
+      markdown += `**错误位置**: \`${culprit}\`\n\n`;
+    }
 
-  //   // 统计信息
-  //   markdown += `**出现次数**: \`${count}\`\n\n`;
-  //   markdown += `**影响用户数**: \`${userCount}\`\n\n`;
+    // 统计信息
+    markdown += `**出现次数**: \`${count}\`\n\n`;
+    markdown += `**影响用户数**: \`${userCount}\`\n\n`;
 
-  //   // 是否未处理
-  //   if (isUnhandled) {
-  //     markdown += `**⚠️ 未处理异常**: \`是\`\n\n`;
-  //   }
+    // 是否未处理
+    if (isUnhandled) {
+      markdown += `**⚠️ 未处理异常**: \`是\`\n\n`;
+    }
 
-  //   // 元数据信息
-  //   if (metadata && Object.keys(metadata).length > 0) {
-  //     markdown += `**元数据**:\n`;
-  //     Object.entries(metadata).forEach(([key, value]) => {
-  //       if (value && typeof value === "string") {
-  //         markdown += `- ${key}: \`${value}\`\n`;
-  //       }
-  //     });
-  //     markdown += `\n`;
-  //   }
+    // 元数据信息
+    if (metadata && Object.keys(metadata).length > 0) {
+      markdown += `**元数据**:\n`;
+      Object.entries(metadata).forEach(([key, value]) => {
+        if (value && typeof value === "string") {
+          markdown += `- ${key}: \`${value}\`\n`;
+        }
+      });
+      markdown += `\n`;
+    }
 
-  //   // 触发者信息
-  //   if (actor && actor.type && actor.name) {
-  //     markdown += `**触发者**: \`${actor.name}\` (${actor.type})\n\n`;
-  //   }
+    // 触发者信息
+    if (actor && actor.type && actor.name) {
+      markdown += `**触发者**: \`${actor.name}\` (${actor.type})\n\n`;
+    }
 
-  //   // 查看详情链接
-  //   if (webUrl) {
-  //     markdown += `**[查看详情](${webUrl})**`;
-  //   } else if (shortId) {
-  //     markdown += `**Issue ID**: \`${shortId}\``;
-  //   }
+    // 查看详情链接
+    if (webUrl) {
+      markdown += `**[查看详情](${webUrl})**`;
+    } else if (shortId) {
+      markdown += `**Issue ID**: \`${shortId}\``;
+    }
 
-  //   return markdown;
-  // } else if (event) {
-  //   // 关闭soucemap上传会没有error，只有issue
-  //   let markdown = `## 🚨 Sentry 告警通知【event】\n\n`;
+    return markdown;
+  } else if (event) {
+    // 关闭soucemap上传会没有error，只有issue
+    let markdown = `## 🚨 Sentry 告警通知【event】\n\n`;
 
-  //   markdown += `**项目**: \`${event.project}\`\n\n`;
-  //   markdown += `**级别**: \`${event.level.toUpperCase()}\`\n\n`;
-  //   markdown += `**平台**: \`${event.platform}\`\n\n`;
-  //   markdown += `**时间**: \`${new Date(event.datetime).toLocaleString(
-  //     "zh-CN"
-  //   )}\`\n\n`;
-  //   markdown += `**错误**: \`${event.title}\`\n\n`;
-  //   markdown += `**消息**: \`${event.message}\`\n\n`;
-  //   markdown += `**错误位置**: \`${event.culprit}\`\n\n`;
-  //   markdown += `[查看详情](${event.web_url})\n\n`;
+    markdown += `**项目**: \`${event.project}\`\n\n`;
+    markdown += `**级别**: \`${event.level.toUpperCase()}\`\n\n`;
+    markdown += `**平台**: \`${event.platform}\`\n\n`;
+    markdown += `**时间**: \`${new Date(event.datetime).toLocaleString(
+      "zh-CN"
+    )}\`\n\n`;
+    markdown += `**错误**: \`${event.title}\`\n\n`;
+    markdown += `**消息**: \`${event.message}\`\n\n`;
+    markdown += `**错误位置**: \`${event.culprit}\`\n\n`;
+    markdown += `[查看详情](${event.web_url})\n\n`;
 
-  //   return markdown;
-  // }
+    return markdown;
+  }
 
   return false;
 }
