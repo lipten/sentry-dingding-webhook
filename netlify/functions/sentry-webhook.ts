@@ -196,6 +196,7 @@ function formatSentryMessage(sentryData: SentryWebhookPayload): string | false {
 
     // 构建markdown消息
     let markdown = `## 🚨 Sentry 告警通知【error】\n\n`;
+    markdown += `### 项目: \`${project}\`\n\n`;
 
     // 基本信息
     markdown += `**环境**: \`${environment}\`\n\n`;
@@ -321,7 +322,7 @@ function formatSentryMessage(sentryData: SentryWebhookPayload): string | false {
     const metadata = issue.metadata || {};
 
     // 基本信息
-    markdown += `**项目**: \`${project}\`\n\n`;
+    markdown += `### 项目: \`${project}\`\n\n`;
     markdown += `**级别**: \`${level.toUpperCase()}\`\n\n`;
     markdown += `**状态**: \`${status}\`\n\n`;
     markdown += `**问题类型**: \`${issueType}\`\n\n`;
@@ -394,7 +395,7 @@ function formatSentryMessage(sentryData: SentryWebhookPayload): string | false {
     // 关闭soucemap上传会没有error，只有issue
     let markdown = `## 🚨 Sentry 告警通知【event】\n\n`;
 
-    markdown += `**项目**: \`${projectName || event.project}\`\n\n`;
+    markdown += `### 项目: \`${projectName || event.project}\`\n\n`;
     markdown += `**级别**: \`${event.level.toUpperCase()}\`\n\n`;
     markdown += `**平台**: \`${event.platform}\`\n\n`;
     markdown += `**时间**: \`${new Date(event.datetime).toLocaleString(
