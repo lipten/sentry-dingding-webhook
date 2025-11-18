@@ -49,16 +49,33 @@ export const handler = async (
     // 解析Sentry发送的数据
     const sentryData: SentryWebhookPayload = JSON.parse(event.body);
     console.log("sentryData", JSON.stringify(sentryData, null, 2));
-    const dingdingWebhookUrl = process.env["DINGDING_WEBHOOK_URL"];
+
+    // 根据查询参数env选择对应的webhook URL
+    const envParam = event.queryStringParameters?.env;
+    let dingdingWebhookUrl: string | undefined;
+
+    if (envParam === "prod") {
+      dingdingWebhookUrl = process.env["DINGDING_WEBHOOK_URL_PROD"];
+      console.log("使用生产环境钉钉webhook: DINGDING_WEBHOOK_URL_PROD");
+    } else {
+      dingdingWebhookUrl = process.env["DINGDING_WEBHOOK_URL"];
+      console.log("使用默认钉钉webhook: DINGDING_WEBHOOK_URL");
+    }
 
     // 检查环境变量
     if (!dingdingWebhookUrl) {
-      console.error("DINGDING_WEBHOOK_URL environment variable is not set");
+      const envVarName =
+        envParam === "prod"
+          ? "DINGDING_WEBHOOK_URL_PROD"
+          : "DINGDING_WEBHOOK_URL";
+      console.error(`${envVarName} environment variable is not set`);
       return {
         statusCode: 500,
         headers,
         body: JSON.stringify({
-          error: "DingDing webhook URL not configured",
+          error: `DingDing webhook URL not configured for environment: ${
+            envParam || "default"
+          }`,
         } as ErrorResponse),
       };
     }
@@ -131,8 +148,17 @@ function formatSentryMessage(sentryData: SentryWebhookPayload): string | false {
   }
 
   if (error) {
+    // 从url中获取真正的project名字
+    let projectName = ''
+    const projectIndex = error.url
+      .split("/")
+      .findIndex((item) => item === "projects");
+    if (projectIndex !== -1) {
+      projectName = error.url.split("/")[projectIndex + 2] || '';
+    }
+
     // 提取基本信息
-    const project = error.project || "Unknown";
+    const project = projectName || error.project || "Unknown";
     const level = error.level || "info";
     const environment = error.environment || "production";
     const title = error.title || error.message || "未知错误";
@@ -271,8 +297,7 @@ function formatSentryMessage(sentryData: SentryWebhookPayload): string | false {
       markdown += `**Issue ID**: \`${issueId}\``;
     }
     return markdown;
-  }
-  else if (issue) {
+  } else if (issue) {
     // 关闭soucemap上传会没有error，只有issue
     let markdown = `## 🚨 Sentry 告警通知【issue】\n\n`;
 
@@ -358,10 +383,18 @@ function formatSentryMessage(sentryData: SentryWebhookPayload): string | false {
 
     return markdown;
   } else if (event) {
+    // 从url中获取真正的project名字
+    let projectName = ''
+    const projectIndex = event.url
+      .split("/")
+      .findIndex((item) => item === "projects");
+    if (projectIndex !== -1) {
+      projectName = event.url.split("/")[projectIndex + 2] || '';
+    }
     // 关闭soucemap上传会没有error，只有issue
     let markdown = `## 🚨 Sentry 告警通知【event】\n\n`;
 
-    markdown += `**项目**: \`${event.project}\`\n\n`;
+    markdown += `**项目**: \`${projectName || event.project}\`\n\n`;
     markdown += `**级别**: \`${event.level.toUpperCase()}\`\n\n`;
     markdown += `**平台**: \`${event.platform}\`\n\n`;
     markdown += `**时间**: \`${new Date(event.datetime).toLocaleString(
