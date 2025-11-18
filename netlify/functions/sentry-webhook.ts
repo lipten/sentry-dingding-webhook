@@ -149,12 +149,12 @@ function formatSentryMessage(sentryData: SentryWebhookPayload): string | false {
 
   if (error) {
     // 从url中获取真正的project名字
-    let projectName = ''
+    let projectName = "";
     const projectIndex = error.url
       .split("/")
       .findIndex((item) => item === "projects");
     if (projectIndex !== -1) {
-      projectName = error.url.split("/")[projectIndex + 2] || '';
+      projectName = error.url.split("/")[projectIndex + 2] || "";
     }
 
     // 提取基本信息
@@ -195,8 +195,8 @@ function formatSentryMessage(sentryData: SentryWebhookPayload): string | false {
     const device = contexts.device || {};
 
     // 构建markdown消息
-    let markdown = `## 🚨 Sentry 告警通知【error】\n\n`;
-    markdown += `### 项目: \`${project}\`\n\n`;
+    let markdown = `## 🚨 ${project} 告警【error】\n\n`;
+    markdown += `**项目**: \`${project}\`\n\n`;
 
     // 基本信息
     markdown += `**环境**: \`${environment}\`\n\n`;
@@ -299,9 +299,6 @@ function formatSentryMessage(sentryData: SentryWebhookPayload): string | false {
     }
     return markdown;
   } else if (issue) {
-    // 关闭soucemap上传会没有error，只有issue
-    let markdown = `## 🚨 Sentry 告警通知【issue】\n\n`;
-
     // 提取issue基本信息
     const project = issue.project?.["name"] || "Unknown";
     const level = issue.level || "info";
@@ -321,8 +318,10 @@ function formatSentryMessage(sentryData: SentryWebhookPayload): string | false {
     const isUnhandled = issue.isUnhandled || false;
     const metadata = issue.metadata || {};
 
+    // 关闭soucemap上传会没有error，只有issue
+    let markdown = `## 🚨 ${project} 告警【issue】\n\n`;
     // 基本信息
-    markdown += `### 项目: \`${project}\`\n\n`;
+    markdown += `**项目**: \`${project}\`\n\n`;
     markdown += `**级别**: \`${level.toUpperCase()}\`\n\n`;
     markdown += `**状态**: \`${status}\`\n\n`;
     markdown += `**问题类型**: \`${issueType}\`\n\n`;
@@ -385,17 +384,17 @@ function formatSentryMessage(sentryData: SentryWebhookPayload): string | false {
     return markdown;
   } else if (event) {
     // 从url中获取真正的project名字
-    let projectName = ''
+    let projectName = "";
     const projectIndex = event.url
       .split("/")
       .findIndex((item) => item === "projects");
     if (projectIndex !== -1) {
-      projectName = event.url.split("/")[projectIndex + 2] || '';
+      projectName = event.url.split("/")[projectIndex + 2] || "";
     }
     // 关闭soucemap上传会没有error，只有issue
-    let markdown = `## 🚨 Sentry 告警通知【event】\n\n`;
+    let markdown = `## 🚨 ${projectName || event.project} 告警【event】\n\n`;
 
-    markdown += `### 项目: \`${projectName || event.project}\`\n\n`;
+    markdown += `**项目**: \`${projectName || event.project}\`\n\n`;
     markdown += `**级别**: \`${event.level.toUpperCase()}\`\n\n`;
     markdown += `**平台**: \`${event.platform}\`\n\n`;
     markdown += `**时间**: \`${new Date(event.datetime).toLocaleString(
